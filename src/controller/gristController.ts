@@ -46,22 +46,30 @@ const fetchCurrentTableColumnsFromDocApi = async (gristTable: GristTable, gristT
     console.log("looking for plugin configuration table");
     console.log(gristTables);
 
-    
+
     //const configurationTableIndex = gristTables.tableName.indexOf("Plugin Configuration");
-    const configurationTableIndex = 3;
+    const configurationTableIndex = gristTables.tableId.indexOf("CONFIG");
     const configurationTableId = gristTables.id[configurationTableIndex]
-    const configurationColumnsIds = [];
 
     console.log("pluginConfigurationTableId : ", configurationTableId)
-    const currentTableColumnsIds = [];
-
-    let index = gristTableColumns.parentId.indexOf(currentTableId);
-    while (index !== -1) {
-        currentTableColumnsIds.push(index);
-        index = gristTableColumns.parentId.indexOf(currentTableId, index + 1);
+    const configurationTableColumnsIds = getAllColumnIdsByParentId(configurationTableId, gristTableColumns);
+    for (const colId of configurationTableColumnsIds) {
+        console.log("configuration table column : ", colId);
     }
-    return currentTableColumnsIds;
+    
+    return getAllColumnIdsByParentId(currentTableId, gristTableColumns);
 }
+
+export const getAllColumnIdsByParentId = (parentId: number, gristTableColumns: GristTablesColumns): string[] => {
+    const columnIds: string[] = [];
+    let index = gristTableColumns.parentId.indexOf(parentId);
+    while (index !== -1) {
+        columnIds.push(gristTableColumns.colId[index]);
+        index = gristTableColumns.parentId.indexOf(parentId, index + 1);
+    }
+    return columnIds;
+}
+
 
 export const displayErrorsIfAnyConfigurationColumnMissing = () => {
     const columnsMissingLabelDisplay = columns.filter(
