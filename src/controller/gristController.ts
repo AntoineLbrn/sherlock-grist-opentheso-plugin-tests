@@ -42,9 +42,10 @@ const fetchCurrentTableColumnsFromDocApi = async (gristTable: GristTable, gristT
     const currentTableIndex = gristTables.tableId.indexOf(technicalTableId);
     const currentTableId = gristTables.id[currentTableIndex]
     console.log("gristTableId : ", currentTableId)
-
+    const configurationTable = await grist.docApi.fetchTable("CONFIG")
     console.log("looking for plugin configuration table");
-    console.log(gristTables);
+    console.log(configurationTable)
+    console.log("looking for plugin configuration table");
 
 
     //const configurationTableIndex = gristTables.tableName.indexOf("Plugin Configuration");
@@ -56,11 +57,11 @@ const fetchCurrentTableColumnsFromDocApi = async (gristTable: GristTable, gristT
     for (const colId of configurationTableColumnsIds) {
         console.log("configuration table column : ", colId);
     }
-    
+
     return getAllColumnIdsByParentId(currentTableId, gristTableColumns);
 }
 
-export const getAllColumnIdsByParentId = (parentId: number, gristTableColumns: GristTablesColumns): string[] => {
+export const getAllColumnIdsByParentId = (parentId: number, gristTableColumns: GristTablesColumns): number[] => {
     const columnIds: string[] = [];
     let index = gristTableColumns.parentId.indexOf(parentId);
     while (index !== -1) {
